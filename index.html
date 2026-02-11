@@ -75,7 +75,7 @@ box-shadow:0 0 20px rgba(56,189,248,.6);
 transition:opacity .8s ease;
 }
 
-/* TOP RIGHT CONTROLS */
+/* Controls */
 .controls{
 position:fixed;
 top:15px;
@@ -106,6 +106,22 @@ border:1px solid #334155;
 font-size:14px;
 color:#e5e7eb;
 }
+
+/* ===== NEW LEGEND BOX (Only Added Part) ===== */
+.legend{
+position:fixed;
+bottom:15px;
+left:15px;
+background:#0f172acc;
+padding:12px 15px;
+border-radius:10px;
+border:1px solid #334155;
+font-size:12px;
+line-height:1.6;
+color:#e2e8f0;
+box-shadow:0 0 15px rgba(0,0,0,.5);
+}
+.legend b{color:#38bdf8}
 </style>
 </head>
 
@@ -129,6 +145,18 @@ color:#e5e7eb;
 <div id="info" class="info">Press Next ▶ to start</div>
 </div>
 
+<!-- ===== FULL FORM LEGEND (Only Added Part) ===== -->
+<div class="legend">
+<b>A, B</b> = USER<br>
+<b>KDC</b> = Key Distribution Center<br>
+<b>IDA/IDB</b> = Identity key shared between A and B<br>
+<b>KA</b> = Secret key shared between A and KDC<br>
+<b>KB</b> = Secret key shared between B and KDC<br>
+<b>KS</b> = Session key (Temporary)<br>
+<b>N1, N2</b> = Nonces (Random number)<br>
+<b>E</b> = Encryption
+</div>
+
 <script>
 class Simulator{
 constructor(){
@@ -146,6 +174,11 @@ this.steps=[
 {from:"alice",to:"bob",msg:"E(KS)[N2-1]",exp:"Authentication proof"},
 {info:"Secure session established. Communication now uses KS."}
 ];
+}
+
+clearPacket(){
+this.packet.style.opacity=0;
+this.explain.style.opacity=0;
 }
 
 animate(from,to,label,exp){
@@ -177,8 +210,8 @@ e.style.left=x+f.width/2+"px";
 e.style.top=y-35+"px";
 
 if(prog<1)requestAnimationFrame(run);
-else setTimeout(()=>{p.style.opacity=0;e.style.opacity=0},600);
 };
+
 requestAnimationFrame(run);
 }
 
@@ -188,9 +221,27 @@ if(s.info){this.info.innerText=s.info}
 if(s.from){this.animate(s.from,s.to,s.msg,s.exp)}
 }
 
-next(){if(this.step<this.steps.length-1){this.step++;this.update()}}
-prev(){if(this.step>0){this.step--;this.update()}}
-reset(){this.step=0;this.update()}
+next(){
+if(this.step<this.steps.length-1){
+this.clearPacket();
+this.step++;
+this.update();
+}
+}
+
+prev(){
+if(this.step>0){
+this.clearPacket();
+this.step--;
+this.update();
+}
+}
+
+reset(){
+this.clearPacket();
+this.step=0;
+this.update();
+}
 }
 
 const sim=new Simulator();
@@ -199,4 +250,3 @@ sim.update();
 
 </body>
 </html>
-
